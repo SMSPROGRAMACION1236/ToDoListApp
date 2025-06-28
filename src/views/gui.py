@@ -8,7 +8,7 @@ class TodoList(tk.Tk):
         self.title("ToDoList")
         self.geometry("600x500")
         self.resizable(True, True)
-        self.configure(bg="Red")
+        self.configure(bg="#e2aa87")
 
         self.task_manager = TaskManager()
         self.completed_tasks = set()  # Para guardar los índices de tareas completadas
@@ -19,33 +19,33 @@ class TodoList(tk.Tk):
         self.update_task_count()  # Initialize task count
 
     def show_entry(self):
-        self.label_entry = tk.Label(self, text="Enter a task:", width=100)
-        self.label_entry.pack()
+        self.label_entry = tk.Label(self, text="Enter a task:", width=10, font=("Arial", 15), bg="#ef8e7d", fg="#ddd")
+        self.label_entry.place(x=25, y=20)
 
-        self.task_entry = tk.Entry(self)
-        self.task_entry.pack()
+        self.task_entry = tk.Entry(self, width=40, font=("Arial", 12))
+        self.task_entry.place(x=200, y=25)
 
     def show_buttons(self):
-        self.add_button = tk.Button(self, text="Add Task", command=self.add_task_to_gui)
-        self.add_button.pack()
+        self.add_button = tk.Button(self, text="Add Task", command=self.add_task_to_gui, width=15, height=1, font=("Arial", 11), bg="#a2d3c7")
+        self.add_button.place(x=100, y=70)
 
-        self.remove_button = tk.Button(self, text="Remove Task", command=self.remove_task_to_gui)
-        self.remove_button.pack()
+        self.remove_button = tk.Button(self, text="Remove Task", command=self.remove_task_to_gui, width=15, height=1, font=("Arial", 11), bg="#fef7e1")
+        self.remove_button.place(x=250, y=70)
 
-        self.show_button = tk.Button(self, text="Show Tasks", command=self.show_tasks)
-        self.show_button.pack()
+        self.show_button = tk.Button(self, text="Show Tasks", command=self.show_tasks, width=15, height=1, font=("Arial", 11), bg="#e2aa87")
+        self.show_button.place(x=400, y=70)
 
-        self.complete_button = tk.Button(self, text="Marcar como completada", command=self.put_task_as_completed_button)
-        self.complete_button.pack()
+        self.complete_button = tk.Button(self, text="Marcar como completada", command=self.put_task_as_completed_button, width=20, height=1, font=("Arial", 11), bg="#edd8bb")
+        self.complete_button.place(x=200, y=120)
 
     def show_listbox(self):
-        self.list_box_tasks = tk.Listbox(self, width=50)
-        self.list_box_tasks.pack()
+        self.list_box_tasks = tk.Listbox(self, width=60, height=15, font=("Arial", 12))
+        self.list_box_tasks.place(x=30, y=170)
         self.list_box_tasks.bind('<Double-Button-1>', self.put_task_as_completed)
 
         # Add task count label below the listbox
-        self.task_count_label = tk.Label(self, text="")
-        self.task_count_label.pack()
+        self.task_count_label = tk.Label(self, text="", font=("Arial", 12), bg="#ef8e7d", fg="white")
+        self.task_count_label.place(x=60, y=450)
 
     def update_task_count(self):
         count = len(self.task_manager.get_all_tasks())
