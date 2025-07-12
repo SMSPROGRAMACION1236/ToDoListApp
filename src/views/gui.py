@@ -36,23 +36,23 @@ class TodoList(tk.Tk):
         self.show_button = tk.Button(self, text="Show Tasks", command=self.show_tasks, width=15, height=1, font=("Arial", 11), bg="#e2aa87")
         self.show_button.place(x=400, y=70)
 
-        self.complete_button = tk.Button(self, text="Marcar como completada", command=self.put_task_as_completed_button, width=20, height=1, font=("Arial", 11), bg="#edd8bb")
+        self.complete_button = tk.Button(self, text="Mark as Completed", command=self.put_task_as_completed_button, width=20, height=1, font=("Arial", 11), bg="#edd8bb")
         self.complete_button.place(x=200, y=120)
 
-        self.save_button = tk.Button(self, text="Guardar", command=self.guardar_tareas, width=10, height=1, font=("Arial", 11), bg="#b6e2d3")
+        self.save_button = tk.Button(self, text="Save", command=self.guardar_tareas, width=10, height=1, font=("Arial", 11), bg="#b6e2d3")
         self.save_button.place(x=50, y=120)
 
-        self.load_button = tk.Button(self, text="Cargar", command=self.cargar_tareas, width=10, height=1, font=("Arial", 11), bg="#b6cbe2")
+        self.load_button = tk.Button(self, text="Load", command=self.cargar_tareas, width=10, height=1, font=("Arial", 11), bg="#b6cbe2")
         self.load_button.place(x=400, y=120)
 
     def show_search(self):
-        self.search_label = tk.Label(self, text="Buscar:", font=("Arial", 12), bg="#e2aa87")
+        self.search_label = tk.Label(self, text="Search:", font=("Arial", 12), bg="#e2aa87")
         self.search_label.place(x=30, y=155)
         self.search_entry = tk.Entry(self, width=30, font=("Arial", 12))
         self.search_entry.place(x=100, y=155)
-        self.search_button = tk.Button(self, text="Buscar", command=self.buscar_tareas, width=10, font=("Arial", 11), bg="#e2aa87")
+        self.search_button = tk.Button(self, text="Search", command=self.buscar_tareas, width=10, font=("Arial", 11), bg="#e2aa87")
         self.search_button.place(x=350, y=152)
-        self.clear_search_button = tk.Button(self, text="Limpiar", command=self.show_tasks, width=10, font=("Arial", 11), bg="#e2aa87")
+        self.clear_search_button = tk.Button(self, text="Clean", command=self.show_tasks, width=10, font=("Arial", 11), bg="#e2aa87")
         self.clear_search_button.place(x=450, y=152)
 
     def show_listbox(self):
