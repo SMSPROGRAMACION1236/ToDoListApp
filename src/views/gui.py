@@ -45,6 +45,12 @@ class TodoList(tk.Tk):
         self.load_button = tk.Button(self, text="Load", command=self.cargar_tareas, width=10, height=1, font=("Arial", 11), bg="#b6cbe2")
         self.load_button.place(x=400, y=120)
 
+        self.edit_button = tk.Button(self, text="Edit", command=self.edit_task)
+        self.edit_button.place(x=500, y=120 )
+
+        self.save_edit_button = tk.Button(self, text="Save Edit", command= self.save_edit)
+        self.save_edit_button.place(x= 550, y=120)
+
     def show_search(self):
         self.search_label = tk.Label(self, text="Search:", font=("Arial", 12), bg="#e2aa87")
         self.search_label.place(x=30, y=155)
@@ -186,6 +192,34 @@ class TodoList(tk.Tk):
             self.show_tasks()
         except FileNotFoundError:
             pass  # Si no existe el archivo, no hace nada
+    def edit_task(self):
+        selected_indices = self.list_box_tasks.curselection()
+        if not selected_indices:
+            return
+        index = selected_indices[0]
+        display_text = self.list_box_tasks.get(index)
+        task = display_text[4:]  # Quita el prefijo '
+        # print(selected_indices)  el indice
+        # print(display_text) el cuerpo completo de la tarea
+        # print(task) solo la tarea
+        self.task_entry.delete(0, "end")
+        self.task_entry.insert(0, task)
+        self.editing_index = index
+    def save_edit(self):
+        if not hasattr(self, "editing_index"):
+            return
+        new_task = self.task_entry.get().strip()
+        if not new_task:
+            return
+        self.task_manager.tasks[self.editing_index] = new_task
+        if self.editing_index in self.completed_tasks:
+            display_text = "[✔] " + new_task
+        else:
+            display_text = "[ ] " + new_task
+            self.list_box_tasks.delete(self.editing_index)
+            self.list_box_tasks.insert(self.editing_index, display_text)
+            self.task_entry.delete(0, "end")
+            del self.editing_index
 
 if __name__ == "__main__":
     app = TodoList()
