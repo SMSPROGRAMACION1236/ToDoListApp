@@ -6,83 +6,77 @@ class TodoList(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title("ToDoList")
-        self.geometry("600x500")
-        self.resizable(True, True)
+        self.geometry("700x600")
+        self.resizable(False, False)
         self.configure(bg="#e2aa87")
 
         self.task_manager = TaskManager()
-        self.completed_tasks = set()  # Para guardar los índices de tareas completadas
+        self.completed_tasks = set()
 
         self.show_entry()
         self.show_buttons()
         self.show_search()
         self.show_listbox()
-        self.update_task_count()  # Initialize task count
+        self.update_task_count()
 
     def show_entry(self):
-        self.label_entry = tk.Label(self, text="Enter a task:", width=10, font=("Arial", 15), bg="#ef8e7d", fg="#ddd")
-        self.label_entry.place(x=25, y=20)
+        self.label_entry = tk.Label(self, text="Enter a task:", width=14, font=("Arial", 15), bg="#ef8e7d", fg="#ddd")
+        self.label_entry.place(x=40, y=25)
 
-        self.task_entry = tk.Entry(self, width=40, font=("Arial", 12))
-        self.task_entry.place(x=200, y=25)
+        self.task_entry = tk.Entry(self, width=48, font=("Arial", 12))
+        self.task_entry.place(x=200, y=30)
 
     def show_buttons(self):
         self.add_button = tk.Button(self, text="Add Task", command=self.add_task_to_gui, width=15, height=1, font=("Arial", 11), bg="#a2d3c7")
-        self.add_button.place(x=100, y=70)
+        self.add_button.place(x=60, y=80)
 
         self.remove_button = tk.Button(self, text="Remove Task", command=self.remove_task_to_gui, width=15, height=1, font=("Arial", 11), bg="#fef7e1")
-        self.remove_button.place(x=250, y=70)
+        self.remove_button.place(x=200, y=80)
 
         self.show_button = tk.Button(self, text="Show Tasks", command=self.show_tasks, width=15, height=1, font=("Arial", 11), bg="#e2aa87")
-        self.show_button.place(x=400, y=70)
+        self.show_button.place(x=340, y=80)
 
         self.complete_button = tk.Button(self, text="Mark as Completed", command=self.put_task_as_completed_button, width=20, height=1, font=("Arial", 11), bg="#edd8bb")
-        self.complete_button.place(x=200, y=120)
+        self.complete_button.place(x=480, y=80)
 
-        self.save_button = tk.Button(self, text="Save", command=self.guardar_tareas, width=10, height=1, font=("Arial", 11), bg="#b6e2d3")
-        self.save_button.place(x=50, y=120)
+        self.save_button = tk.Button(self, text="Save", command=self.guardar_tareas, width=12, height=1, font=("Arial", 11), bg="#b6e2d3")
+        self.save_button.place(x=120, y=130)
 
-        self.load_button = tk.Button(self, text="Load", command=self.cargar_tareas, width=10, height=1, font=("Arial", 11), bg="#b6cbe2")
-        self.load_button.place(x=400, y=120)
+        self.load_button = tk.Button(self, text="Load", command=self.cargar_tareas, width=12, height=1, font=("Arial", 11), bg="#b6cbe2")
+        self.load_button.place(x=260, y=130)
 
-        self.edit_button = tk.Button(self, text="Edit", command=self.edit_task)
-        self.edit_button.place(x=500, y=120 )
+        self.edit_button = tk.Button(self, text="Edit", command=self.edit_task, width=12, height=1, font=("Arial", 11), bg="#f7e1fe")
+        self.edit_button.place(x=400, y=130)
 
-        self.save_edit_button = tk.Button(self, text="Save Edit", command= self.save_edit)
-        self.save_edit_button.place(x= 550, y=120)
+        self.save_edit = tk.Button(self, text="Save Edit", command=self.save_edit, width=12, height=1, font=("Arial", 11), bg="#e1f7fe")
+        self.save_edit.place(x=540, y=130)
 
     def show_search(self):
         self.search_label = tk.Label(self, text="Search:", font=("Arial", 12), bg="#e2aa87")
-        self.search_label.place(x=30, y=155)
-        self.search_entry = tk.Entry(self, width=30, font=("Arial", 12))
-        self.search_entry.place(x=100, y=155)
+        self.search_label.place(x=40, y=180)
+        self.search_entry = tk.Entry(self, width=35, font=("Arial", 12))
+        self.search_entry.place(x=110, y=180)
         self.search_button = tk.Button(self, text="Search", command=self.buscar_tareas, width=10, font=("Arial", 11), bg="#e2aa87")
-        self.search_button.place(x=350, y=152)
+        self.search_button.place(x=400, y=177)
         self.clear_search_button = tk.Button(self, text="Clean", command=self.show_tasks, width=10, font=("Arial", 11), bg="#e2aa87")
-        self.clear_search_button.place(x=450, y=152)
+        self.clear_search_button.place(x=520, y=177)
 
     def show_listbox(self):
-        # Frame para contener Listbox y Scrollbars
         frame = tk.Frame(self)
-        frame.place(x=30, y=190)
+        frame.place(x=20, y=220)
 
-        self.list_box_tasks = tk.Listbox(frame, width=60, height=13, font=("Arial", 12), xscrollcommand=None)
+        self.scrollbar_y = tk.Scrollbar(frame, orient=tk.VERTICAL)
+        self.scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.list_box_tasks = tk.Listbox(frame, width=71, height=16, font=("Arial", 12),
+                                         yscrollcommand=self.scrollbar_y.set)
         self.list_box_tasks.pack(side=tk.LEFT, fill=tk.BOTH)
         self.list_box_tasks.bind('<Double-Button-1>', self.put_task_as_completed)
 
-        # Scrollbar vertical
-        self.scrollbar_y = tk.Scrollbar(frame, orient=tk.VERTICAL, command=self.list_box_tasks.yview)
-        self.scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
-        self.list_box_tasks.config(yscrollcommand=self.scrollbar_y.set)
+        self.scrollbar_y.config(command=self.list_box_tasks.yview)
 
-        # Scrollbar horizontal
-        # self.scrollbar_x = tk.Scrollbar(frame, orient=tk.HORIZONTAL, command=self.list_box_tasks.xview)
-        # self.scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
-        # self.list_box_tasks.config(xscrollcommand=self.scrollbar_x.set)
-
-        # Add task count label below the listbox
         self.task_count_label = tk.Label(self, text="", font=("Arial", 12), bg="#ef8e7d", fg="white")
-        self.task_count_label.place(x=60, y=450)
+        self.task_count_label.place(x=40, y=550)
 
     def update_task_count(self):
         count = len(self.task_manager.get_all_tasks())
@@ -150,8 +144,7 @@ class TodoList(tk.Tk):
 
     def toggle_task_completed(self, index):
         display_text = self.list_box_tasks.get(index)
-        task = display_text[4:]  # Quita el prefijo
-        # Buscar el índice real en la lista de tareas
+        task = display_text[4:]
         all_tasks = self.task_manager.get_all_tasks()
         real_index = None
         for i, t in enumerate(all_tasks):
@@ -161,11 +154,11 @@ class TodoList(tk.Tk):
         if real_index is None:
             return
         if real_index in self.completed_tasks:
-            # Desmarcar
+
             self.completed_tasks.remove(real_index)
             new_text = "[ ] " + task
         else:
-            # Marcar
+
             self.completed_tasks.add(real_index)
             new_text = "[✔] " + task
         self.list_box_tasks.delete(index)
@@ -198,10 +191,8 @@ class TodoList(tk.Tk):
             return
         index = selected_indices[0]
         display_text = self.list_box_tasks.get(index)
-        task = display_text[4:]  # Quita el prefijo '
-        # print(selected_indices)  el indice
-        # print(display_text) el cuerpo completo de la tarea
-        # print(task) solo la tarea
+        task = display_text[4:]
+
         self.task_entry.delete(0, "end")
         self.task_entry.insert(0, task)
         self.editing_index = index
