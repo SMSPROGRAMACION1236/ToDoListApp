@@ -3,7 +3,14 @@ from functions.task_manager import TaskManager
 import json
 
 class TodoList(tk.Tk):
+    """
+    Main GUI class for the ToDoList application.
+    Handles the creation and management of the graphical interface and user interactions.
+    """
     def __init__(self, *args, **kwargs):
+        """
+        Initializes the main window, sets up the layout, and initializes the task manager.
+        """
         super().__init__(*args, **kwargs)
         self.title("ToDoList")
         self.geometry("700x600")
@@ -20,6 +27,9 @@ class TodoList(tk.Tk):
         self.update_task_count()
 
     def show_entry(self):
+        """
+        Creates and places the label and entry widget for adding new tasks.
+        """
         self.label_entry = tk.Label(self, text="Enter a task:", width=14, font=("Arial", 15), bg="#ef8e7d", fg="#ddd")
         self.label_entry.place(x=40, y=25)
 
@@ -27,6 +37,9 @@ class TodoList(tk.Tk):
         self.task_entry.place(x=200, y=30)
 
     def show_buttons(self):
+        """
+        Creates and places all main action buttons (add, remove, show, complete, save, load, edit, save edit).
+        """
         self.add_button = tk.Button(self, text="Add Task", command=self.add_task_to_gui, width=15, height=1, font=("Arial", 11), bg="#a2d3c7")
         self.add_button.place(x=60, y=80)
 
@@ -52,6 +65,9 @@ class TodoList(tk.Tk):
         self.save_edit.place(x=540, y=130)
 
     def show_search(self):
+        """
+        Creates and places the search bar and related buttons.
+        """
         self.search_label = tk.Label(self, text="Search:", font=("Arial", 12), bg="#e2aa87")
         self.search_label.place(x=40, y=180)
         self.search_entry = tk.Entry(self, width=35, font=("Arial", 12))
@@ -62,6 +78,9 @@ class TodoList(tk.Tk):
         self.clear_search_button.place(x=520, y=177)
 
     def show_listbox(self):
+        """
+        Creates and places the Listbox for displaying tasks and its vertical scrollbar.
+        """
         frame = tk.Frame(self)
         frame.place(x=20, y=220)
 
@@ -79,10 +98,16 @@ class TodoList(tk.Tk):
         self.task_count_label.place(x=40, y=550)
 
     def update_task_count(self):
+        """
+        Updates the label showing the total number of tasks.
+        """
         count = len(self.task_manager.get_all_tasks())
         self.task_count_label.config(text=f"Total Tasks: {count}")
 
     def add_task_to_gui(self):
+        """
+        Adds a new task from the entry to the task list and updates the Listbox.
+        """
         task = self.task_entry.get().strip()
         if task and self.task_manager.add_task(task):
             display_text = "[ ] " + task
@@ -91,14 +116,16 @@ class TodoList(tk.Tk):
             self.update_task_count()
 
     def remove_task_to_gui(self):
+        """
+        Removes the selected task(s) from the Listbox and the task manager.
+        """
         selected_indices = self.list_box_tasks.curselection()
         if not selected_indices:
             return
 
-        for index in selected_indices[::-1]:  # reverse to avoid index shift
-            # Elimina la tarea de la lógica y del Listbox
+        for index in selected_indices[::-1]:
             display_text = self.list_box_tasks.get(index)
-            task = display_text[4:]  # Quita el prefijo '[ ] ' o '[✔] '
+            task = display_text[4:]
             if self.task_manager.remove_task(task):
                 self.list_box_tasks.delete(index)
                 self.completed_tasks.discard(index)
@@ -107,7 +134,10 @@ class TodoList(tk.Tk):
         self.update_task_count()
 
     def show_tasks(self):
-        self.list_box_tasks.delete(0, 'end')  # clear current list
+        """
+        Displays all tasks in the Listbox, showing their completed state.
+        """
+        self.list_box_tasks.delete(0, 'end')
         for i, task in enumerate(self.task_manager.get_all_tasks()):
             if i in self.completed_tasks:
                 display_text = "[✔] " + task
@@ -117,6 +147,9 @@ class TodoList(tk.Tk):
         self.update_task_count()
 
     def buscar_tareas(self):
+        """
+        Searches for tasks containing the query and displays only those in the Listbox.
+        """
         query = self.search_entry.get().strip().lower()
         self.list_box_tasks.delete(0, 'end')
         if not query:
@@ -126,9 +159,11 @@ class TodoList(tk.Tk):
             if query in task.lower():
                 display_text = ("[✔] " if i in self.completed_tasks else "[ ] ") + task
                 self.list_box_tasks.insert('end', display_text)
-        # No actualiza el contador porque no es la lista completa
 
     def put_task_as_completed(self, event):
+        """
+        Toggles the completed state of the selected task when double-clicked.
+        """
         selection = self.list_box_tasks.curselection()
         if not selection:
             return
@@ -136,6 +171,9 @@ class TodoList(tk.Tk):
         self.toggle_task_completed(index)
 
     def put_task_as_completed_button(self):
+        """
+        Toggles the completed state of the selected task when the button is pressed.
+        """
         selection = self.list_box_tasks.curselection()
         if not selection:
             return
@@ -143,6 +181,9 @@ class TodoList(tk.Tk):
         self.toggle_task_completed(index)
 
     def toggle_task_completed(self, index):
+        """
+        Changes the completed state of a task and updates its display in the Listbox.
+        """
         display_text = self.list_box_tasks.get(index)
         task = display_text[4:]
         all_tasks = self.task_manager.get_all_tasks()
@@ -154,11 +195,9 @@ class TodoList(tk.Tk):
         if real_index is None:
             return
         if real_index in self.completed_tasks:
-
             self.completed_tasks.remove(real_index)
             new_text = "[ ] " + task
         else:
-
             self.completed_tasks.add(real_index)
             new_text = "[✔] " + task
         self.list_box_tasks.delete(index)
@@ -167,6 +206,9 @@ class TodoList(tk.Tk):
         self.list_box_tasks.selection_set(index)
 
     def guardar_tareas(self, filename="tasks.json"):
+        """
+        Saves all tasks and their completed state to a JSON file.
+        """
         tareas = self.task_manager.get_all_tasks()
         completadas = list(self.completed_tasks)
         data = {
@@ -177,6 +219,9 @@ class TodoList(tk.Tk):
             json.dump(data, f)
 
     def cargar_tareas(self, filename="tasks.json"):
+        """
+        Loads tasks and their completed state from a JSON file.
+        """
         try:
             with open(filename, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -184,19 +229,26 @@ class TodoList(tk.Tk):
             self.completed_tasks = set(data.get("completed_tasks", []))
             self.show_tasks()
         except FileNotFoundError:
-            pass  # Si no existe el archivo, no hace nada
+            pass
+
     def edit_task(self):
+        """
+        Loads the selected task into the entry widget for editing.
+        """
         selected_indices = self.list_box_tasks.curselection()
         if not selected_indices:
             return
         index = selected_indices[0]
         display_text = self.list_box_tasks.get(index)
         task = display_text[4:]
-
         self.task_entry.delete(0, "end")
         self.task_entry.insert(0, task)
         self.editing_index = index
+
     def save_edit(self):
+        """
+        Saves the edited task back to the task list and updates the Listbox.
+        """
         if not hasattr(self, "editing_index"):
             return
         new_task = self.task_entry.get().strip()
@@ -207,10 +259,10 @@ class TodoList(tk.Tk):
             display_text = "[✔] " + new_task
         else:
             display_text = "[ ] " + new_task
-            self.list_box_tasks.delete(self.editing_index)
-            self.list_box_tasks.insert(self.editing_index, display_text)
-            self.task_entry.delete(0, "end")
-            del self.editing_index
+        self.list_box_tasks.delete(self.editing_index)
+        self.list_box_tasks.insert(self.editing_index, display_text)
+        self.task_entry.delete(0, "end")
+        del self.editing_index
 
 if __name__ == "__main__":
     app = TodoList()
